@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <script src="tmi.min.js"></script>
+    <style>
+      @font-face { font-family: 'Arial Narrow'; src: url('ArialNarrow.woff') format('woff'); }
+      p { font-family: "Arial Narrow", serif; }
+      .blue { color: blue; }
+      .orange { color: orange; }
+      .message { margin-block-start: 0em !important; margin-block-end: 0em !important; }
+    </style>
+  </head>
+  <body>
+    <div id="chat"></div>
+    <script type="text/javascript">
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const length = (urlParams.get('length')) || 10;
+      const users = (urlParams.get('users')) || 'shroud,nickmercs,timthetatman,drlupo,geekandsundry,imls';
+      const chatElement = document.querySelector('#chat');
+      const chatObject = [];
+
+      const client = new tmi.Client({ connection: { secure: true, reconnect: true }, channels: users.split(',') });
+
+      client.connect();
+
+      client.on('message', (channel, tags, message, self) => {
+      	const { username } = tags;
+        const color = (username.length % 2) ? 'blue' : 'orange';
+        chatElement.innerHTML = chatObject.map(msgObj=>`<p class='message ${msgObj.color}'>${msgObj.username}: ${msgObj.message}</p>`).join('');
+        if(chatObject.length >= length) chatObject.shift();
+        chatObject.push({ username, message, color });
+      });
+
+    </script>
+  </body>
+</html>
