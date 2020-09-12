@@ -15,25 +15,20 @@
   <body>
     <div id="chat"></div>
     <script type="text/javascript">
-
       const urlParams = new URLSearchParams(window.location.search);
       const length = (urlParams.get('length')) || 10;
       const users = (urlParams.get('users')) || 'shroud,nickmercs,timthetatman,drlupo,geekandsundry,imls';
       const chatElement = document.querySelector('#chat');
       const chatObject = [];
-
       const client = new tmi.Client({ connection: { secure: true, reconnect: true }, channels: users.split(',') });
-
       client.connect();
-
       client.on('message', (channel, tags, message, self) => {
       	const { username } = tags;
         const color = (username.length % 2) ? 'blue' : 'orange';
-        chatElement.innerHTML = chatObject.map(msgObj=>`<p class='message ${msgObj.color}'>${msgObj.username}: ${msgObj.message}</p>`).join('');
         if(chatObject.length >= length) chatObject.shift();
         chatObject.push({ username, message, color });
+        chatElement.innerHTML = chatObject.map(msgObj=>`<p class='message ${msgObj.color}'>${msgObj.username}: ${msgObj.message}</p>`).join('');
       });
-
     </script>
   </body>
 </html>
