@@ -5,35 +5,19 @@
     <title></title>
     <script src="js/tmi.min.js"></script>
     <script src="js/purify.min.js"></script>
-    <style>
-      @font-face { font-family: 'Arial Narrow'; src: url('ArialNarrow.woff') format('woff'); }
-      p { font-family: "Arial Narrow", serif; }
-      .blue { color: blue; }
-      .orange { color: orange; }
-      .message { margin-block-start: 0em !important; margin-block-end: 0em !important; }
-    </style>
-  </head>
-  <body>
-    <div id="chat"></div>
-    <script type="text/javascript">
-      function bleach(message) {
-        return DOMPurify.sanitize(message.replace(/[\u00A0-\u9999<>\&]/gim,i=>'&#'+i.charCodeAt(0)+';'));
-      }
-
+    <link rel="stylesheet" href="configs/config.css">
+    <script type="module">
+      import Config from "./configs/config.js";
       const urlParams = new URLSearchParams(window.location.search);
-      const length = (urlParams.get('length')) || 10;
-      const users = (urlParams.get('users')) || 'shroud,nickmercs,timthetatman,drlupo,geekandsundry,imls';
-      const chatElement = document.querySelector('#chat');
-      const chatObject = [];
-      const client = new tmi.Client({ connection: { secure: true, reconnect: true }, channels: users.split(',') });
+      const conf = new Config(urlParams.get('users'), urlParams.get('max'), document.querySelector('#chat'));
+      const client = new tmi.Client({ connection: { secure: true, reconnect: true }, channels: conf.getUsers() });
       client.connect();
       client.on('message', (channel, tags, message, self) => {
-      	const { username } = tags;
-        const color = (username.length % 2) ? 'blue' : 'orange';
-        if(chatObject.length >= length) chatObject.shift();
-        chatObject.push({ username, message, color });
-        chatElement.innerHTML = chatObject.map(msgObj=>`<p class='message ${msgObj.color}'>${msgObj.username}: ${bleach(msgObj.message)}</p>`).join('');
+        conf.logicMessage(tags.username, message);
       });
     </script>
+  </head>
+  <body>
+    <div id="chat">Waiting on messages!</div>
   </body>
 </html>

@@ -1,0 +1,5 @@
+@font-face { font-family: 'Arial Narrow'; src: url('../woff/ArialNarrow.woff') format('woff'); }
+p { font-family: "Arial Narrow", serif; }
+.blue { color: blue; }
+.orange { color: orange; }
+.message { margin-block-start: 0em !important; margin-block-end: 0em !important; }
