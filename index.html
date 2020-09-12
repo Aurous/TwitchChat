@@ -3,7 +3,8 @@
   <head>
     <meta charset="utf-8">
     <title></title>
-    <script src="tmi.min.js"></script>
+    <script src="js/tmi.min.js"></script>
+    <script src="js/purify.min.js"></script>
     <style>
       @font-face { font-family: 'Arial Narrow'; src: url('ArialNarrow.woff') format('woff'); }
       p { font-family: "Arial Narrow", serif; }
@@ -15,6 +16,10 @@
   <body>
     <div id="chat"></div>
     <script type="text/javascript">
+      function bleach(message) {
+        return DOMPurify.sanitize(message.replace(/[\u00A0-\u9999<>\&]/gim,i=>'&#'+i.charCodeAt(0)+';'));
+      }
+
       const urlParams = new URLSearchParams(window.location.search);
       const length = (urlParams.get('length')) || 10;
       const users = (urlParams.get('users')) || 'shroud,nickmercs,timthetatman,drlupo,geekandsundry,imls';
@@ -27,7 +32,7 @@
         const color = (username.length % 2) ? 'blue' : 'orange';
         if(chatObject.length >= length) chatObject.shift();
         chatObject.push({ username, message, color });
-        chatElement.innerHTML = chatObject.map(msgObj=>`<p class='message ${msgObj.color}'>${msgObj.username}: ${msgObj.message}</p>`).join('');
+        chatElement.innerHTML = chatObject.map(msgObj=>`<p class='message ${msgObj.color}'>${msgObj.username}: ${bleach(msgObj.message)}</p>`).join('');
       });
     </script>
   </body>
