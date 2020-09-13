@@ -1,6 +1,6 @@
 # TwitchChat
 ## A simple project that allows the user to display or view theirs or others twitch chat.
-
+### Intended to be used in OBS as a browser source.
 * Powered by [tmi.js](https://tmijs.com/)
 * This project uses three parameters.
   * users - A list of usernames separated by commas. - Ex: users=notdeathalchemy,tulogit2quit,shroud,summit1g
