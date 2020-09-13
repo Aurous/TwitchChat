@@ -1,17 +1,82 @@
-This simple web app was made to support a streamer friend of mine.
+# TwitchChat
+## A simple project that allows the user to display or view theirs or others twitch chat.
 
-He asked me to make him a chat component based off the typing in rocket league.
+* Powered by [tmi.js](https://tmijs.com/)
+* This project uses three parameters.
+  * users - A list of usernames separated by commas. - Ex: users=notdeathalchemy,tulogit2quit,shroud,summit1g
+  * max - The max number of messages from users displayed on the screen. Ex: max=25
+  * config - Changes the loaded configuration for stylesheet and javascript class. Ex: config=rl
 
-Using [tmi.js](https://tmijs.com/) to access the chat.
+## Adding customization
 
-You can try out a basic version [Here](https://deathalchemy.com)!
+To add your own customization you can start by duplicating the config.default.css or config.default.js files located in configs folder.
+#### config.default.js
+```javascript
+import Twitch from '../js/twitch.js';
 
-To access users rooms use the url parameter users seperated by commas. Ex: [users=shroud,summit1g,notdeathalchemy](https://deathalchemy.com?users=shroud,summit1g,notdeathalchemy)
+class Config extends Twitch {
+  constructor(users, maxMessages) {
+    super(users, maxMessages);
+  }
+}
 
-To change how many messages are on screen use the max parameter max is a number. Ex: [max=15](https://deathalchemy.com?users=shroud,summit1g,notdeathalchemy&max=15)
+export default Config;
+```
+The default config has no functions that overlap with twitch parent class.
+* pasreMessage - does the neccassary sanitize on messages that are sent.
+* onMessage - formats the message object that is returned to the main page.
+* logicMessage - the logic of the messages moving into the message array.
+* getUsers - returns the list of usernames that are being used by the app.
+#### config.rocketleague.js (Example)
+```javascript
+import Twitch from '../js/twitch.js';
 
-To dynamically change the config you can use the config parameter config is a key from an array. Ex [config=rl](https://deathalchemy.com?config=rl)
+class Config extends Twitch {
+  constructor(users, maxMessages) {
+    super(users, maxMessages);
+  }
 
-To enable a custom style and logic check out the configs folder, it includes a css and js file. There are two examples included for the rocket league look.
-The JS file is setup in a class format to allow for overwriting functions so that they can be customized.
-The CSS file is imported directly and can be used to style the site.
+  onMessage() {
+    return this.msgs.map((msg)=>`<p class='message ${msg.color}'>${msg.username}: ${this.pasreMessage(msg.message)}</p>`).join('');
+  }
+
+  logicMessage(username, message) {
+    const color = (username.length % 2) ? 'blue' : 'orange';
+    if(this.msgs.length >= this.max) this.msgs.shift();
+    this.msgs.push({ username, message, color });
+    chat.innerHTML = this.onMessage();
+  }
+}
+
+export default Config;
+```
+
+#### config.default.css
+this file is empty by default.
+the editable content:
+```html
+<html>
+  <body>
+    <div id="chat">
+      <p class="message"></p>
+    </div>
+  <body>
+</html>
+```
+* id:chat - main div that messages are appended in.
+* class:message - class that all messages are set with.
+#### config.rocketleague.css
+```css
+@font-face { font-family: 'Arial Narrow'; src: url('../woff/ArialNarrow.woff') format('woff'); }
+p { font-family: "Arial Narrow", serif; }
+.blue { color: blue; }
+.orange { color: orange; }
+.message { margin-block-start: 0em !important; margin-block-end: 0em !important; }
+```
+
+## The future
+- [x] Finish project base concept.
+- [x] Add multi and dynamic support for configs.
+- [ ] Add google login support with firebase.
+- [ ] Allow users to create their own configs.
+- [ ] Allow chat moderation through bot.
