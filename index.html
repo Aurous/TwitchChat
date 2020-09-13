@@ -23,8 +23,11 @@
       const styleConfig = { rel: "stylesheet", type: "text/css", href: configs[config].css };
       const stylesheet = head.appendChild(Object.assign(document.createElement('link'),styleConfig));
       import(configs[config].js).then(({default: Config})=>{
-        const conf = new Config(urlParams.get('users'), urlParams.get('max'), document.querySelector('#chat'));
-        const client = new tmi.Client({ connection: { secure: true, reconnect: true }, channels: conf.getUsers() });
+        const chat = document.querySelector('#chat');
+        const conf = new Config(urlParams.get('users'), urlParams.get('max'), chat);
+        const users = conf.getUsers();
+        chat.innerHTML = `Loading messages from ${users.join(', ')}`;
+        const client = new tmi.Client({ connection: { secure: true, reconnect: true }, channels: users });
         client.connect();
         client.on('message', (channel, tags, message, self) => {
           conf.logicMessage(tags.username, message);
@@ -33,6 +36,6 @@
     </script>
   </head>
   <body>
-    <div id="chat">Waiting on messages!</div>
+    <div id="chat"></div>
   </body>
 </html>
