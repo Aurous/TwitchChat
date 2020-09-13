@@ -52,7 +52,10 @@ export default Config;
 ```
 
 #### config.default.css
-this file is empty by default.
+```css
+.message { color: white; }
+body { background-color: black; }
+```
 the editable content:
 ```html
 <html>
