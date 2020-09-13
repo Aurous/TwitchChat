@@ -9,7 +9,7 @@
 
 ## Adding customization
 
-To add your own customization you can start by duplicating the config.default.css or config.default.js files located in configs folder.
+To start you can start by duplicating the config.default.css or config.default.js files located in the configs folder.
 #### config.default.js
 ```javascript
 import Twitch from '../js/twitch.js';
@@ -22,8 +22,8 @@ class Config extends Twitch {
 
 export default Config;
 ```
-The default config has no functions that overlap with twitch parent class.
-* pasreMessage - does the neccassary sanitize on messages that are sent.
+The default config has no functions that overlap with Twitch parent class.
+* pasreMessage - do the necessary sanitize on messages that are sent.
 * onMessage - formats the message object that is returned to the main page.
 * logicMessage - the logic of the messages moving into the message array.
 * getUsers - returns the list of usernames that are being used by the app.
@@ -78,5 +78,5 @@ p { font-family: "Arial Narrow", serif; }
 - [x] Finish project base concept.
 - [x] Add multi and dynamic support for configs.
 - [ ] Add google login support with firebase.
-- [ ] Allow users to create their own configs.
-- [ ] Allow chat moderation through bot.
+- [ ] Allow users to create their custom configs.
+- [ ] Allow chat moderation.
