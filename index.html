@@ -5,15 +5,30 @@
     <title></title>
     <script src="js/tmi.min.js"></script>
     <script src="js/purify.min.js"></script>
-    <link rel="stylesheet" href="configs/config.css">
+    <!-- <link rel="stylesheet" href="configs/config.css"> -->
     <script type="module">
-      import Config from "./configs/config.js";
+      const configs = {
+        default: {
+          css: './configs/config.default.css',
+          js: './configs/config.default.js',
+        },
+        rl: {
+          css: './configs/config.rocketleague.css',
+          js: './configs/config.rocketleague.js',
+        }
+      }
       const urlParams = new URLSearchParams(window.location.search);
-      const conf = new Config(urlParams.get('users'), urlParams.get('max'), document.querySelector('#chat'));
-      const client = new tmi.Client({ connection: { secure: true, reconnect: true }, channels: conf.getUsers() });
-      client.connect();
-      client.on('message', (channel, tags, message, self) => {
-        conf.logicMessage(tags.username, message);
+      const config = (urlParams.get('config')) || 'default';
+      const head = document.getElementsByTagName("head")[0];
+      const styleConfig = { rel: "stylesheet", type: "text/css", href: configs[config].css };
+      const stylesheet = head.appendChild(Object.assign(document.createElement('link'),styleConfig));
+      import(configs[config].js).then(({default: Config})=>{
+        const conf = new Config(urlParams.get('users'), urlParams.get('max'), document.querySelector('#chat'));
+        const client = new tmi.Client({ connection: { secure: true, reconnect: true }, channels: conf.getUsers() });
+        client.connect();
+        client.on('message', (channel, tags, message, self) => {
+          conf.logicMessage(tags.username, message);
+        });
       });
     </script>
   </head>

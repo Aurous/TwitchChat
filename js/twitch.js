@@ -4,7 +4,6 @@ class Twitch {
     this.users = (users && users.split(',')) || ['shroud', 'summit1g', 'notdeathalchemy', 'tulogit2quit'];
     this.max = (parseInt(max, 10)) || 10;
     this.msgs = [];
-    console.log(this);
   }
 
   getUsers() {
@@ -21,7 +20,6 @@ class Twitch {
 
   logicMessage(username, message) {
     if(this.msgs.length >= this.max) this.msgs.shift();
-    console.log(this.msgs.length);
     this.msgs.push({ username, message });
     chat.innerHTML = this.onMessage();
   }
